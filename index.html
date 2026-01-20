@@ -48,7 +48,7 @@ canvas { position: fixed; top:0; left:0; z-index:1; }
   bottom:0;
   width:100%;
   height:100%;
-  background: url("https://i.imgur.com/7NlcZkN.png") repeat-x bottom;
+  background: url("https://i.imgur.com/3b1vXJ0.png") repeat-x bottom; /* stable tree image */
   background-size: contain;
 }
 
@@ -58,6 +58,7 @@ canvas { position: fixed; top:0; left:0; z-index:1; }
   background:#000; color:#fff;
   display:flex; justify-content:center; align-items:center;
   flex-direction:column; z-index:5; cursor:pointer;
+  font-size:1.5rem;
 }
 audio { display:none; }
 </style>
@@ -119,7 +120,7 @@ drawFireworks();
 // Text sync
 const song = document.getElementById("song");
 const lines = [
-  {id:"line1", time:1000},  // Adjust times as needed
+  {id:"line1", time:1000},  // Adjust these times for your song
   {id:"line2", time:4000},
   {id:"line3", time:7500},
   {id:"line4", time:11000}
