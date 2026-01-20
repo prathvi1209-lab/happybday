@@ -30,7 +30,7 @@ const song = document.getElementById('song');
 const clickStart = document.getElementById('clickStart');
 
 // Balloon
-let balloon = {x:100, y:canvas.height-150, r:25, popped:false};
+let balloon = {x:150, y:canvas.height-180, r:25, popped:false};
 let night = false;
 
 // Fireworks
@@ -54,12 +54,11 @@ function draw(){
   ctx.fillStyle = night ? '#0a0a2a' : '#87CEEB';
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // Boy
-  ctx.fillStyle='#0000ff';
-  ctx.fillRect(100, canvas.height-150,50,100);
-  // Girl
-  ctx.fillStyle='#ff00ff';
-  ctx.fillRect(canvas.width-150, canvas.height-150,50,100);
+  // Draw boy
+  drawBoy(125, canvas.height-150);
+
+  // Draw girl
+  drawGirl(canvas.width-125, canvas.height-150);
 
   // Balloon
   if(!balloon.popped){
@@ -71,7 +70,7 @@ function draw(){
     ctx.strokeStyle='black';
     ctx.beginPath();
     ctx.moveTo(balloon.x, balloon.y);
-    ctx.lineTo(125, canvas.height-150);
+    ctx.lineTo(150, canvas.height-130);
     ctx.stroke();
   }
 
@@ -119,6 +118,43 @@ function draw(){
                  "Hope we can celebrate it together, but we can't right now. I miss you. Yours, AVII 💖";
     wrapText(ctx, note, canvas.width/2-250, canvas.height-150, 500, 25);
   }
+}
+
+// Draw boy as simple shapes
+function drawBoy(x, y){
+  // Head
+  ctx.fillStyle='#FFDAB9';
+  ctx.beginPath();
+  ctx.arc(x+25, y-50, 15, 0, Math.PI*2);
+  ctx.fill();
+  // Body
+  ctx.fillStyle='#0000ff';
+  ctx.fillRect(x, y-35, 50, 70);
+  // Legs
+  ctx.fillStyle='#000';
+  ctx.fillRect(x, y+35, 20, 50);
+  ctx.fillRect(x+30, y+35, 20, 50);
+}
+
+// Draw girl as simple shapes
+function drawGirl(x, y){
+  // Head
+  ctx.fillStyle='#FFDAB9';
+  ctx.beginPath();
+  ctx.arc(x+25, y-50, 15, 0, Math.PI*2);
+  ctx.fill();
+  // Body (dress)
+  ctx.fillStyle='#ff00ff';
+  ctx.beginPath();
+  ctx.moveTo(x, y-35);
+  ctx.lineTo(x+50, y-35);
+  ctx.lineTo(x+25, y+50);
+  ctx.closePath();
+  ctx.fill();
+  // Legs
+  ctx.fillStyle='#000';
+  ctx.fillRect(x+10, y+50, 10, 40);
+  ctx.fillRect(x+30, y+50, 10, 40);
 }
 
 // Function to wrap text inside canvas
