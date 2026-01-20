@@ -55,10 +55,10 @@ function draw(){
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
   // Draw boy
-  drawBoy(125, canvas.height-150);
+  drawBoy(150, canvas.height-150);
 
   // Draw girl
-  drawGirl(canvas.width-125, canvas.height-150);
+  drawGirl(canvas.width-150, canvas.height-150);
 
   // Balloon
   if(!balloon.popped){
@@ -70,7 +70,7 @@ function draw(){
     ctx.strokeStyle='black';
     ctx.beginPath();
     ctx.moveTo(balloon.x, balloon.y);
-    ctx.lineTo(150, canvas.height-130);
+    ctx.lineTo(150, canvas.height-130); // boy hand
     ctx.stroke();
   }
 
@@ -127,13 +127,13 @@ function drawBoy(x, y){
   ctx.beginPath();
   ctx.arc(x+25, y-50, 15, 0, Math.PI*2);
   ctx.fill();
-  // Body
+  // Body (shirt)
   ctx.fillStyle='#0000ff';
-  ctx.fillRect(x, y-35, 50, 70);
+  ctx.fillRect(x+10, y-35, 30, 50);
   // Legs
   ctx.fillStyle='#000';
-  ctx.fillRect(x, y+35, 20, 50);
-  ctx.fillRect(x+30, y+35, 20, 50);
+  ctx.fillRect(x+10, y+15, 10, 35);
+  ctx.fillRect(x+30, y+15, 10, 35);
 }
 
 // Draw girl as simple shapes
@@ -143,18 +143,18 @@ function drawGirl(x, y){
   ctx.beginPath();
   ctx.arc(x+25, y-50, 15, 0, Math.PI*2);
   ctx.fill();
-  // Body (dress)
+  // Dress
   ctx.fillStyle='#ff00ff';
   ctx.beginPath();
-  ctx.moveTo(x, y-35);
-  ctx.lineTo(x+50, y-35);
-  ctx.lineTo(x+25, y+50);
+  ctx.moveTo(x+10, y-35);
+  ctx.lineTo(x+40, y-35);
+  ctx.lineTo(x+25, y+40);
   ctx.closePath();
   ctx.fill();
   // Legs
   ctx.fillStyle='#000';
-  ctx.fillRect(x+10, y+50, 10, 40);
-  ctx.fillRect(x+30, y+50, 10, 40);
+  ctx.fillRect(x+15, y+40, 10, 35);
+  ctx.fillRect(x+25, y+40, 10, 35);
 }
 
 // Function to wrap text inside canvas
@@ -181,7 +181,7 @@ function animate(){
   if(!balloon.popped){
     balloon.x +=3;
     balloon.y -=2;
-    if(balloon.x>=canvas.width-125){
+    if(balloon.x>=canvas.width-150){
       balloon.popped=true;
       night=true;
     }
