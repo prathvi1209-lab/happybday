@@ -1,69 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Birthday Anushka</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Anushka</title>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      color: #fff;
-    }
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  height:100vh; overflow:hidden; font-family:'Arial',sans-serif;
+  background: linear-gradient(#020024, #090979, #000);
+}
+canvas { position: fixed; top:0; left:0; z-index:1; }
 
-    .card {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 25px;
-      border-radius: 20px;
-      max-width: 90%;
-    }
+/* Text container */
+.content {
+  position: relative;
+  z-index:3;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
 
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 15px;
-    }
+.line {
+  font-size: 1.8rem;
+  opacity: 0;
+}
 
-    p {
-      font-size: 1.1rem;
-      line-height: 1.6;
-    }
-
-    .from {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-  </style>
-</head>
-
-<body>
-
-  <audio autoplay loop>
-    <source src="aud.mp3" type="audio/mpeg">
-  </audio>
-
-  <div class="card">
-    <h1>Happy 16th Birthday Anushka 🎉</h1>
-
-    <p>
-      Anushka, happy 16th birthday.<br>
-      I hope we can celebrate it together.<br>
-      We can’t right now, but I just hope this becomes the happiest birthday of your life.
-    </p>
-
-    <p class="from">
-      Yours,<br>
-      AVII 💖
-    </p>
-  </div>
-
-</body>
-</html>
+/* Trees silhouette */
+.trees {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 35%;
+  background: linear-gradient(to top, #000, transparent);
+  z-index:2;
+}
+.trees::before {
+  content:"";
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:100%;
+  background: url("https://i.imgur.com/7NlcZkN.png") repeat-x bottom;
+  background-size: contain;
+}
+audio { display:none; }
+</st
