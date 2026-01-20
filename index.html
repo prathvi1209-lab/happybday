@@ -5,62 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Happy Birthday Anushka 🎉</title>
 <style>
-body { margin:0; padding:0; overflow:hidden; font-family:'Arial',sans-serif; background:#87CEEB; }
-canvas { position:absolute; top:0; left:0; z-index:1; }
-#startScreen {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  display:flex; justify-content:center; align-items:center;
-  flex-direction:column; z-index:5; cursor:pointer;
-  font-size:1.5rem; color:#fff;
-}
-#birthdayText {
-  position:absolute; top:20%; width:100%; text-align:center;
-  color:#ff6699; font-family:'Brush Script MT', cursive; font-size:3rem;
-  text-shadow: 2px 2px 10px #ff99cc; opacity:0;
-}
-.note {
-  position:absolute; bottom:50px; width:60%; left:20%;
-  background:#fff; color:#000; padding:20px; font-family:'Courier New', monospace;
-  border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.5); opacity:0;
-}
+body { margin:0; padding:0; overflow:hidden; font-family:Arial, sans-serif; background:#87CEEB; }
+canvas { display:block; position:absolute; top:0; left:0; z-index:1; }
+#clickStart { position:fixed;top:0; left:0; width:100%; height:100%; display:flex;
+justify-content:center; align-items:center; color:#fff; font-size:2rem; cursor:pointer; background:rgba(0,0,0,0.3); z-index:5; }
+#birthdayText { position:absolute; top:20%; width:100%; text-align:center; color:#ff6699; font-size:3rem; text-shadow:2px 2px 10px #ff99cc; opacity:0; z-index:4; }
+#letter { position:absolute; bottom:50px; width:60%; left:20%; background:#fff; color:#000; padding:20px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.5); font-family:Courier; opacity:0; z-index:4; }
 </style>
 </head>
 <body>
 
-<audio id="song">
-  <source src="aud.mp3" type="audio/mpeg">
-</audio>
+<audio id="song"><source src="aud.mp3" type="audio/mpeg"></audio>
 
-<div id="startScreen"><h1>Click anywhere to start 🎉</h1></div>
+<div id="clickStart">Click anywhere to start 🎉</div>
 <div id="birthdayText">Happy 16th Birthday Anushka 🎉</div>
-<div class="note" id="letter">
-Hey Anushka, I hope this will be your best birthday ever. Hope we can celebrate it together, but we can’t right now. I miss you. <br><br>Yours,<br>AVII 💖
+<div id="letter">
+Hey Anushka, I hope this will be your best birthday ever. Hope we can celebrate it together, but we can’t right now. I miss you.<br>Yours,<br>AVII 💖
 </div>
 
-<canvas id="canvas"></canvas>
+<canvas id="c"></canvas>
 
 <script>
-const canvas = document.getElementById('canvas');
+const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const song = document.getElementById('song');
-const startScreen = document.getElementById('startScreen');
+const clickStart = document.getElementById('clickStart');
 const birthdayText = document.getElementById('birthdayText');
 const letter = document.getElementById('letter');
 
-// Simple shapes for boy, girl, balloon
+// Balloon and "characters" as shapes
 const boy = {x:100, y:canvas.height-150, w:50, h:100};
 const girl = {x:canvas.width-150, y:canvas.height-150, w:50, h:100};
 let balloon = {x:boy.x+25, y:boy.y-50, r:20, popped:false};
 
-// Fireworks array
-const fireworks = [];
+let fireworks = [];
 
-function drawScene(day=true){
-  // background
-  ctx.fillStyle = day ? '#87CEEB' : '#0a0a2a';
+// Draw scene
+function drawScene(night=false){
+  // Background
+  ctx.fillStyle = night ? '#0a0a2a' : '#87CEEB';
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
   // Boy
@@ -72,22 +58,22 @@ function drawScene(day=true){
 
   // Balloon
   if(!balloon.popped){
-    ctx.fillStyle = 'red';
+    ctx.fillStyle='red';
     ctx.beginPath();
     ctx.arc(balloon.x, balloon.y, balloon.r,0,Math.PI*2);
     ctx.fill();
-    // string
-    ctx.strokeStyle = '#000';
+    // String
+    ctx.strokeStyle='#000';
     ctx.beginPath();
     ctx.moveTo(balloon.x, balloon.y);
     ctx.lineTo(boy.x+25, boy.y);
     ctx.stroke();
   }
 
-  // Night sky moon + stars
-  if(!day){
+  // Night moon + stars
+  if(night){
     // Moon
-    ctx.fillStyle = '#fdf6c3';
+    ctx.fillStyle='#fdf6c3';
     ctx.beginPath();
     ctx.arc(canvas.width-150,150,50,0,Math.PI*2);
     ctx.fill();
@@ -103,55 +89,54 @@ function drawScene(day=true){
   // Fireworks
   fireworks.forEach((fw,i)=>{
     fw.particles.forEach(p=>{
-      p.x+=Math.cos(p.angle)*p.speed;
-      p.y+=Math.sin(p.angle)*p.speed;
-      ctx.fillStyle='rgba(255,255,255,0.8)';
+      p.x += Math.cos(p.angle)*p.speed;
+      p.y += Math.sin(p.angle)*p.speed;
+      ctx.fillStyle = `rgba(${fw.color.r},${fw.color.g},${fw.color.b},0.8)`;
       ctx.beginPath();
       ctx.arc(p.x,p.y,2,0,Math.PI*2);
       ctx.fill();
     });
-    fw.life--; if(fw.life<=0) fireworks.splice(i,1);
+    fw.life--;
+    if(fw.life<=0) fireworks.splice(i,1);
   });
 }
 
-function animateDay(){
-  drawScene(true);
+// Balloon animation
+function animateBalloon(){
+  drawScene();
   if(!balloon.popped){
-    balloon.y -=2;
-    balloon.x +=1.5;
+    balloon.x +=2;
+    balloon.y -=1.5;
     if(balloon.x >= girl.x+25){
-      balloon.popped = true;
-      // Start night scene after balloon pops
-      setTimeout(()=>animateNight(),500);
-      // Show text and note
-      setTimeout(()=>{birthdayText.style.opacity=1; letter.style.opacity=1;},1000);
+      balloon.popped=true;
+      setTimeout(()=>{birthdayText.style.opacity=1; letter.style.opacity=1;},500);
+      setTimeout(()=>{startFireworks();},500);
     }
-    requestAnimationFrame(animateDay);
+    requestAnimationFrame(animateBalloon);
+  } else {
+    drawScene(true);
+    requestAnimationFrame(()=>drawScene(true));
   }
-}
-
-function animateNight(){
-  drawScene(false);
-  requestAnimationFrame(animateNight);
 }
 
 // Fireworks generator
 function startFireworks(){
   setInterval(()=>{
-    const fw = {x:Math.random()*canvas.width, y:Math.random()*canvas.height/2, life:60, particles:[]};
+    const fw = {x:Math.random()*canvas.width, y:Math.random()*canvas.height/2, life:60, particles:[], color:{r:Math.random()*255, g:Math.random()*255, b:Math.random()*255}};
     for(let i=0;i<50;i++){
       fw.particles.push({x:fw.x,y:fw.y,angle:Math.random()*Math.PI*2,speed:Math.random()*4+1});
     }
     fireworks.push(fw);
   },800);
+  function fwLoop(){ drawScene(true); requestAnimationFrame(fwLoop); }
+  fwLoop();
 }
 
-// Start click
-startScreen.addEventListener('click', ()=>{
-  startScreen.style.display='none';
+// Start
+clickStart.addEventListener('click', ()=>{
+  clickStart.style.display='none';
   song.play();
-  animateDay();
-  setTimeout(startFireworks, 1000);
+  animateBalloon();
 });
 </script>
 
