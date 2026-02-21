@@ -2,14 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday Kirty 💖</title>
+<title>Happy Birthday Krity 💖</title>
 
 <style>
 body{
   margin:0;
   overflow:hidden;
-  background:#87CEEB;
   font-family:Arial, sans-serif;
+  background:#000814;
   color:white;
   text-align:center;
 }
@@ -20,36 +20,33 @@ canvas{
   left:0;
 }
 
-#startScreen{
-  position:absolute;
+#start{
+  position:fixed;
   width:100%;
   height:100%;
+  background:rgba(0,0,0,0.7);
   display:flex;
   justify-content:center;
   align-items:center;
   font-size:2rem;
-  background:rgba(0,0,0,0.5);
   cursor:pointer;
   z-index:10;
 }
 
 #birthdayScreen{
   display:none;
-  position:absolute;
-  width:100%;
-  height:100%;
-  background:linear-gradient(to top,#000010,#001a33);
-  padding-top:60px;
+  position:relative;
+  z-index:2;
+  padding-top:80px;
 }
 
-#birthdayScreen h1{
-  font-size:3rem;
+h1{
+  font-size:3.5rem;
 }
 
 #note{
   width:60%;
-  margin:auto;
-  margin-top:30px;
+  margin:30px auto;
   line-height:1.6;
   font-size:1.1rem;
 }
@@ -58,12 +55,13 @@ canvas{
 
 <body>
 
-<div id="startScreen">Click To Start 💖</div>
+<div id="start">Click To Start 💖</div>
 
 <canvas id="canvas"></canvas>
 
 <div id="birthdayScreen">
-  <h1>Happy Birthday Kirty 🎉</h1>
+  <h1>Happy Birthday Krity 🎉</h1>
+
   <div id="note">
   Hey,<br><br>
   I know we don’t really talk anymore, and things are different now… but I just wanted to say I genuinely appreciate what we had. Our friendship was honestly one of the best parts of my life at that time.<br><br>
@@ -79,17 +77,16 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const startScreen = document.getElementById("startScreen");
+const start = document.getElementById("start");
 const birthdayScreen = document.getElementById("birthdayScreen");
 
 let balloonX = 200;
 let balloonY = canvas.height - 200;
 let balloonMoving = false;
 let balloonPopped = false;
+let sceneFinished = false;
 
-let hearts = [];
-
-// Draw girl (simple shape)
+// Draw simple girl
 function drawGirl(x,y,color){
   ctx.fillStyle="#FFDAB9";
   ctx.beginPath();
@@ -104,28 +101,37 @@ function drawGirl(x,y,color){
   ctx.fill();
 }
 
-function drawScene(){
-  ctx.fillStyle="#87CEEB";
+// Draw stars
+function drawStars(){
+  for(let i=0;i<100;i++){
+    ctx.fillStyle="white";
+    ctx.fillRect(Math.random()*canvas.width,Math.random()*canvas.height,2,2);
+  }
+}
+
+function animate(){
+  if(sceneFinished) return;
+
+  ctx.fillStyle="#001d3d";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // Girl 1 (giver)
+  drawStars();
+
+  // First girl
   drawGirl(200,canvas.height-150,"#ff69b4");
 
-  // Three girls receiving
+  // Three girls
   drawGirl(canvas.width-300,canvas.height-150,"#ba55d3");
   drawGirl(canvas.width-200,canvas.height-150,"#ff1493");
   drawGirl(canvas.width-100,canvas.height-150,"#db7093");
 
+  // Balloon
   if(!balloonPopped){
     ctx.fillStyle="red";
     ctx.beginPath();
     ctx.arc(balloonX,balloonY,20,0,Math.PI*2);
     ctx.fill();
-  }
-}
 
-function animate(){
-  if(balloonMoving && !balloonPopped){
     balloonX += 4;
     balloonY -= 2;
 
@@ -135,60 +141,43 @@ function animate(){
     }
   }
 
-  drawScene();
   requestAnimationFrame(animate);
 }
 
 function showBirthdayScreen(){
+  sceneFinished = true;
   canvas.style.display="none";
   birthdayScreen.style.display="block";
   startHearts();
 }
 
-// Floating hearts
 function startHearts(){
   setInterval(()=>{
-    hearts.push({
-      x:Math.random()*window.innerWidth,
-      y:window.innerHeight,
-      size:10+Math.random()*10,
-      speed:1+Math.random()*2
-    });
-  },200);
+    let heart = document.createElement("div");
+    heart.innerHTML="💖";
+    heart.style.position="fixed";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.bottom="-20px";
+    heart.style.fontSize=(15+Math.random()*15)+"px";
+    heart.style.opacity="0.8";
+    heart.style.transition="transform 6s linear, opacity 6s linear";
+    document.body.appendChild(heart);
 
-  function heartAnimation(){
-    let bg = birthdayScreen;
-    bg.style.position="relative";
+    setTimeout(()=>{
+      heart.style.transform="translateY(-110vh)";
+      heart.style.opacity="0";
+    },50);
 
-    let existing = document.querySelectorAll(".heart");
-    existing.forEach(h=>h.remove());
+    setTimeout(()=>{
+      heart.remove();
+    },6000);
 
-    hearts.forEach((h,i)=>{
-      h.y -= h.speed;
-
-      let heart = document.createElement("div");
-      heart.className="heart";
-      heart.style.position="absolute";
-      heart.style.left=h.x+"px";
-      heart.style.top=h.y+"px";
-      heart.style.fontSize=h.size+"px";
-      heart.innerHTML="💖";
-      bg.appendChild(heart);
-
-      if(h.y < -20){
-        hearts.splice(i,1);
-      }
-    });
-
-    requestAnimationFrame(heartAnimation);
-  }
-
-  heartAnimation();
+  },250);
 }
 
-startScreen.onclick = function(){
-  startScreen.style.display="none";
-  balloonMoving = true;
+start.onclick=function(){
+  start.style.display="none";
+  balloonMoving=true;
   animate();
 };
 </script>
