@@ -2,184 +2,164 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday Krity 💖</title>
-
+<title>Happy Birthday Kirty</title>
 <style>
 body{
   margin:0;
   overflow:hidden;
+  background:#87CEEB;
   font-family:Arial, sans-serif;
-  background:#000814;
-  color:white;
-  text-align:center;
 }
-
-canvas{
+canvas{display:block;}
+#message{
   position:absolute;
-  top:0;
-  left:0;
-}
-
-#start{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.7);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:2rem;
-  cursor:pointer;
-  z-index:10;
-}
-
-#birthdayScreen{
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
   display:none;
-  position:relative;
-  z-index:2;
-  padding-top:80px;
+  color:white;
 }
-
-h1{
-  font-size:3.5rem;
+#message h1{
+  font-size:55px;
+  color:#ff69b4;
 }
-
 #note{
-  width:60%;
-  margin:30px auto;
-  line-height:1.6;
-  font-size:1.1rem;
+  background:#fff8dc;
+  color:black;
+  padding:20px;
+  width:500px;
+  border-radius:15px;
+  margin-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="start">Click To Start 💖</div>
-
+<audio id="music" src="aud.mp3"></audio>
 <canvas id="canvas"></canvas>
 
-<div id="birthdayScreen">
-  <h1>Happy Birthday Krity 🎉</h1>
-
-  <div id="note">
-  Hey,<br><br>
-  I know we don’t really talk anymore, and things are different now… but I just wanted to say I genuinely appreciate what we had. Our friendship was honestly one of the best parts of my life at that time.<br><br>
-  All the random talks, the stupid jokes, the way we could tell each other anything — that wasn’t normal friendship stuff. That was special.<br><br>
-  Even if we’re not close anymore, I’ll always respect what we shared. No hard feelings, no bad vibes. Just good memories and wishing you the best, always.<br><br>
-  Take care.
-  </div>
+<div id="message">
+<h1>🎉 Happy Birthday Kirty 🎉</h1>
+<div id="note">
+Hey,<br><br>
+I know we don’t really talk anymore, and things are different now… but I just wanted to say I genuinely appreciate what we had. Our friendship was honestly one of the best parts of my life at that time.<br><br>
+All the random talks, the stupid jokes, the way we could tell each other anything — that wasn’t normal friendship stuff. That was special.<br><br>
+Even if we’re not close anymore, I’ll always respect what we shared. No hard feelings, no bad vibes. Just good memories and wishing you the best, always.<br><br>
+Take care.
+</div>
 </div>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-const start = document.getElementById("start");
-const birthdayScreen = document.getElementById("birthdayScreen");
+let stage=0;
+let hearts=[];
+let stars=[];
+const music=document.getElementById("music");
 
-let balloonX = 200;
-let balloonY = canvas.height - 200;
-let balloonMoving = false;
-let balloonPopped = false;
-let sceneFinished = false;
+canvas.addEventListener("click",()=>{
+ if(stage===0){
+   stage=1;
+   music.play();
+   setTimeout(()=>{stage=2; createHearts(canvas.width/2,200);},3000);
+   setTimeout(()=>{stage=3; showFinal();},5000);
+ }
+});
 
-// Draw simple girl
 function drawGirl(x,y,color){
-  ctx.fillStyle="#FFDAB9";
-  ctx.beginPath();
-  ctx.arc(x,y-60,15,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle=color;
-  ctx.beginPath();
-  ctx.moveTo(x-20,y-45);
-  ctx.lineTo(x+20,y-45);
-  ctx.lineTo(x,y+30);
-  ctx.fill();
+ ctx.fillStyle=color;
+ ctx.beginPath();
+ ctx.arc(x,y,20,0,Math.PI*2);
+ ctx.fill();
+ ctx.fillRect(x-15,y+20,30,60);
 }
 
-// Draw stars
-function drawStars(){
-  for(let i=0;i<100;i++){
-    ctx.fillStyle="white";
-    ctx.fillRect(Math.random()*canvas.width,Math.random()*canvas.height,2,2);
-  }
+function drawBalloon(x,y){
+ ctx.fillStyle="red";
+ ctx.beginPath();
+ ctx.arc(x,y,25,0,Math.PI*2);
+ ctx.fill();
+ ctx.beginPath();
+ ctx.moveTo(x,y+25);
+ ctx.lineTo(x,y+70);
+ ctx.stroke();
+}
+
+function createHearts(x,y){
+ for(let i=0;i<60;i++){
+  hearts.push({
+   x:x,
+   y:y,
+   dx:(Math.random()-0.5)*6,
+   dy:(Math.random()-0.5)*6,
+   size:15+Math.random()*10
+  });
+ }
+}
+
+function createStars(){
+ for(let i=0;i<150;i++){
+  stars.push({
+   x:Math.random()*canvas.width,
+   y:Math.random()*canvas.height,
+   size:Math.random()*2
+  });
+ }
+}
+createStars();
+
+function showFinal(){
+ document.body.style.background="black";
+ document.getElementById("message").style.display="block";
 }
 
 function animate(){
-  if(sceneFinished) return;
+ ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  ctx.fillStyle="#001d3d";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+ if(stage===0){
+  ctx.fillStyle="black";
+  ctx.font="30px Arial";
+  ctx.fillText("Click to Start 🎈",canvas.width/2-100,canvas.height/2);
+ }
 
-  drawStars();
+ if(stage===1){
+  drawGirl(250,350,"pink");      // giver
+  drawGirl(500,350,"skyblue");   // girl 1
+  drawGirl(650,350,"orange");    // girl 2
+  drawGirl(800,350,"purple");    // girl 3
+  drawBalloon(400,200);
+ }
 
-  // First girl
-  drawGirl(200,canvas.height-150,"#ff69b4");
+ if(stage===2){
+  hearts.forEach(h=>{
+   h.x+=h.dx;
+   h.y+=h.dy;
+   ctx.font=h.size+"px Arial";
+   ctx.fillText("💖",h.x,h.y);
+  });
+ }
 
-  // Three girls
-  drawGirl(canvas.width-300,canvas.height-150,"#ba55d3");
-  drawGirl(canvas.width-200,canvas.height-150,"#ff1493");
-  drawGirl(canvas.width-100,canvas.height-150,"#db7093");
+ if(stage===3){
+  ctx.fillStyle="white";
+  stars.forEach(s=>{
+   ctx.fillRect(s.x,s.y,s.size,s.size);
+  });
 
-  // Balloon
-  if(!balloonPopped){
-    ctx.fillStyle="red";
-    ctx.beginPath();
-    ctx.arc(balloonX,balloonY,20,0,Math.PI*2);
-    ctx.fill();
+  hearts.forEach(h=>{
+   h.y-=1;
+   ctx.font="20px Arial";
+   ctx.fillText("💖",h.x,h.y);
+  });
+ }
 
-    balloonX += 4;
-    balloonY -= 2;
-
-    if(balloonX > canvas.width-220){
-      balloonPopped = true;
-      setTimeout(showBirthdayScreen,1000);
-    }
-  }
-
-  requestAnimationFrame(animate);
+ requestAnimationFrame(animate);
 }
-
-function showBirthdayScreen(){
-  sceneFinished = true;
-  canvas.style.display="none";
-  birthdayScreen.style.display="block";
-  startHearts();
-}
-
-function startHearts(){
-  setInterval(()=>{
-    let heart = document.createElement("div");
-    heart.innerHTML="💖";
-    heart.style.position="fixed";
-    heart.style.left=Math.random()*100+"vw";
-    heart.style.bottom="-20px";
-    heart.style.fontSize=(15+Math.random()*15)+"px";
-    heart.style.opacity="0.8";
-    heart.style.transition="transform 6s linear, opacity 6s linear";
-    document.body.appendChild(heart);
-
-    setTimeout(()=>{
-      heart.style.transform="translateY(-110vh)";
-      heart.style.opacity="0";
-    },50);
-
-    setTimeout(()=>{
-      heart.remove();
-    },6000);
-
-  },250);
-}
-
-start.onclick=function(){
-  start.style.display="none";
-  balloonMoving=true;
-  animate();
-};
+animate();
 </script>
 
 </body>
