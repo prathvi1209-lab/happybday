@@ -11,7 +11,7 @@ body{
   font-family:Arial, sans-serif;
 }
 canvas{display:block;}
-#message{
+#final{
   position:absolute;
   top:50%;
   left:50%;
@@ -20,7 +20,7 @@ canvas{display:block;}
   display:none;
   color:white;
 }
-#message h1{
+#final h1{
   font-size:55px;
   color:#ff69b4;
 }
@@ -37,10 +37,13 @@ canvas{display:block;}
 
 <body>
 
-<audio id="music" src="aud.mp3"></audio>
+<audio id="music">
+  <source src="./aud.mp3" type="audio/mpeg">
+</audio>
+
 <canvas id="canvas"></canvas>
 
-<div id="message">
+<div id="final">
 <h1>🎉 Happy Birthday Kirty 🎉</h1>
 <div id="note">
 Hey,<br><br>
@@ -59,18 +62,32 @@ canvas.height=window.innerHeight;
 
 let stage=0;
 let hearts=[];
+let fireworks=[];
 let stars=[];
 const music=document.getElementById("music");
 
-canvas.addEventListener("click",()=>{
+// CLICK START
+canvas.addEventListener("click", function start(){
  if(stage===0){
-   stage=1;
    music.play();
-   setTimeout(()=>{stage=2; createHearts(canvas.width/2,200);},3000);
-   setTimeout(()=>{stage=3; showFinal();},5000);
+   stage=1;
+
+   setTimeout(()=>{
+     stage=2;
+     createHearts(canvas.width/2,200);
+   },3000);
+
+   setTimeout(()=>{
+     stage=3;
+     document.body.style.background="black";
+     document.getElementById("final").style.display="block";
+   },5000);
+
+   canvas.removeEventListener("click", start);
  }
 });
 
+// DRAW GIRL
 function drawGirl(x,y,color){
  ctx.fillStyle=color;
  ctx.beginPath();
@@ -79,6 +96,7 @@ function drawGirl(x,y,color){
  ctx.fillRect(x-15,y+20,30,60);
 }
 
+// DRAW BALLOON
 function drawBalloon(x,y){
  ctx.fillStyle="red";
  ctx.beginPath();
@@ -90,6 +108,7 @@ function drawBalloon(x,y){
  ctx.stroke();
 }
 
+// HEART EXPLOSION
 function createHearts(x,y){
  for(let i=0;i<60;i++){
   hearts.push({
@@ -102,36 +121,46 @@ function createHearts(x,y){
  }
 }
 
-function createStars(){
- for(let i=0;i<150;i++){
-  stars.push({
-   x:Math.random()*canvas.width,
-   y:Math.random()*canvas.height,
-   size:Math.random()*2
+// FIREWORK
+function createFirework(){
+ let x=Math.random()*canvas.width;
+ let y=Math.random()*canvas.height/2;
+
+ for(let i=0;i<60;i++){
+  fireworks.push({
+   x:x,
+   y:y,
+   dx:(Math.random()-0.5)*8,
+   dy:(Math.random()-0.5)*8,
+   life:60
   });
  }
 }
-createStars();
 
-function showFinal(){
- document.body.style.background="black";
- document.getElementById("message").style.display="block";
+// STARS
+for(let i=0;i<150;i++){
+ stars.push({
+  x:Math.random()*canvas.width,
+  y:Math.random()*canvas.height,
+  size:Math.random()*2
+ });
 }
 
+// ANIMATION
 function animate(){
  ctx.clearRect(0,0,canvas.width,canvas.height);
 
  if(stage===0){
   ctx.fillStyle="black";
   ctx.font="30px Arial";
-  ctx.fillText("Click to Start 🎈",canvas.width/2-100,canvas.height/2);
+  ctx.fillText("Click to Start 🎈",canvas.width/2-120,canvas.height/2);
  }
 
  if(stage===1){
-  drawGirl(250,350,"pink");      // giver
-  drawGirl(500,350,"skyblue");   // girl 1
-  drawGirl(650,350,"orange");    // girl 2
-  drawGirl(800,350,"purple");    // girl 3
+  drawGirl(250,350,"pink");
+  drawGirl(500,350,"skyblue");
+  drawGirl(650,350,"orange");
+  drawGirl(800,350,"purple");
   drawBalloon(400,200);
  }
 
@@ -145,16 +174,23 @@ function animate(){
  }
 
  if(stage===3){
+  // stars
   ctx.fillStyle="white";
   stars.forEach(s=>{
    ctx.fillRect(s.x,s.y,s.size,s.size);
   });
 
-  hearts.forEach(h=>{
-   h.y-=1;
-   ctx.font="20px Arial";
-   ctx.fillText("💖",h.x,h.y);
+  // fireworks
+  fireworks.forEach((f,index)=>{
+   f.x+=f.dx;
+   f.y+=f.dy;
+   f.life--;
+   ctx.fillStyle="hsl("+Math.random()*360+",100%,60%)";
+   ctx.fillRect(f.x,f.y,3,3);
+   if(f.life<=0) fireworks.splice(index,1);
   });
+
+  if(Math.random()<0.05) createFirework();
  }
 
  requestAnimationFrame(animate);
