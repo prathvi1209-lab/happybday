@@ -2,23 +2,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Special Surprise 💛</title>
+<title>Happy Birthday Kirty 💖</title>
 
 <style>
 body{
   margin:0;
   overflow:hidden;
   background:#87CEEB;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   color:white;
   text-align:center;
 }
+
 canvas{
   position:absolute;
   top:0;
   left:0;
 }
-#start{
+
+#startScreen{
   position:absolute;
   width:100%;
   height:100%;
@@ -26,80 +28,74 @@ canvas{
   justify-content:center;
   align-items:center;
   font-size:2rem;
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.5);
   cursor:pointer;
   z-index:10;
 }
-.message{
+
+#birthdayScreen{
+  display:none;
   position:absolute;
-  top:15%;
   width:100%;
-  font-size:3rem;
-  font-weight:bold;
-  display:none;
+  height:100%;
+  background:linear-gradient(to top,#000010,#001a33);
+  padding-top:60px;
 }
-.note{
-  position:absolute;
-  bottom:5%;
+
+#birthdayScreen h1{
+  font-size:3rem;
+}
+
+#note{
   width:60%;
-  left:20%;
-  background:rgba(255,255,255,0.15);
-  padding:20px;
-  border-radius:15px;
-  display:none;
+  margin:auto;
+  margin-top:30px;
+  line-height:1.6;
+  font-size:1.1rem;
 }
 </style>
 </head>
 
 <body>
 
-<div id="start">Click To Start 💛</div>
-
-<audio id="music">
-  <source src="aud.mp3" type="audio/mpeg">
-</audio>
+<div id="startScreen">Click To Start 💖</div>
 
 <canvas id="canvas"></canvas>
 
-<div class="message">Happy Birthday 💛</div>
-
-<div class="note">
-Hey,<br><br>
-I know we don’t really talk anymore, and things are different now… but I just wanted to say I genuinely appreciate what we had. Our friendship was honestly one of the best parts of my life at that time.<br><br>
-All the random talks, the stupid jokes, the way we could tell each other anything — that wasn’t normal friendship stuff. That was special.<br><br>
-Even if we’re not close anymore, I’ll always respect what we shared. No hard feelings, no bad vibes. Just good memories and wishing you the best, always.<br><br>
-Take care.
+<div id="birthdayScreen">
+  <h1>Happy Birthday Kirty 🎉</h1>
+  <div id="note">
+  Hey,<br><br>
+  I know we don’t really talk anymore, and things are different now… but I just wanted to say I genuinely appreciate what we had. Our friendship was honestly one of the best parts of my life at that time.<br><br>
+  All the random talks, the stupid jokes, the way we could tell each other anything — that wasn’t normal friendship stuff. That was special.<br><br>
+  Even if we’re not close anymore, I’ll always respect what we shared. No hard feelings, no bad vibes. Just good memories and wishing you the best, always.<br><br>
+  Take care.
+  </div>
 </div>
 
 <script>
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-const start=document.getElementById("start");
-const music=document.getElementById("music");
-const message=document.querySelector(".message");
-const note=document.querySelector(".note");
+const startScreen = document.getElementById("startScreen");
+const birthdayScreen = document.getElementById("birthdayScreen");
 
-let balloon={x:200,y:canvas.height-180,r:25,popped:false};
-let night=false;
-let fireworks=[];
-let started=false;
+let balloonX = 200;
+let balloonY = canvas.height - 200;
+let balloonMoving = false;
+let balloonPopped = false;
 
-start.onclick=function(){
-  start.style.display="none";
-  music.play();
-  started=true;
-  animate();
-};
+let hearts = [];
 
-// Draw girl
+// Draw girl (simple shape)
 function drawGirl(x,y,color){
   ctx.fillStyle="#FFDAB9";
   ctx.beginPath();
   ctx.arc(x,y-60,15,0,Math.PI*2);
   ctx.fill();
+
   ctx.fillStyle=color;
   ctx.beginPath();
   ctx.moveTo(x-20,y-45);
@@ -108,72 +104,93 @@ function drawGirl(x,y,color){
   ctx.fill();
 }
 
-// Firework create
-function createFirework(){
-  let x=Math.random()*canvas.width;
-  let y=Math.random()*canvas.height/2;
-  let parts=[];
-  for(let i=0;i<60;i++){
-    parts.push({
-      x:x,
-      y:y,
-      angle:Math.random()*Math.PI*2,
-      speed:Math.random()*4+1
-    });
+function drawScene(){
+  ctx.fillStyle="#87CEEB";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Girl 1 (giver)
+  drawGirl(200,canvas.height-150,"#ff69b4");
+
+  // Three girls receiving
+  drawGirl(canvas.width-300,canvas.height-150,"#ba55d3");
+  drawGirl(canvas.width-200,canvas.height-150,"#ff1493");
+  drawGirl(canvas.width-100,canvas.height-150,"#db7093");
+
+  if(!balloonPopped){
+    ctx.fillStyle="red";
+    ctx.beginPath();
+    ctx.arc(balloonX,balloonY,20,0,Math.PI*2);
+    ctx.fill();
   }
-  fireworks.push(parts);
 }
 
 function animate(){
-  if(!started) return;
+  if(balloonMoving && !balloonPopped){
+    balloonX += 4;
+    balloonY -= 2;
 
-  // Sky
-  ctx.fillStyle=night ? "#000428" : "#87CEEB";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  // Girls
-  drawGirl(200,canvas.height-120,"#ff69b4");
-  drawGirl(canvas.width-200,canvas.height-120,"#ba55d3");
-
-  // Balloon movement
-  if(!balloon.popped){
-    ctx.fillStyle="red";
-    ctx.beginPath();
-    ctx.arc(balloon.x,balloon.y,balloon.r,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.strokeStyle="black";
-    ctx.beginPath();
-    ctx.moveTo(balloon.x,balloon.y);
-    ctx.lineTo(200,canvas.height-120);
-    ctx.stroke();
-
-    balloon.x+=4;
-    balloon.y-=3;
-
-    if(balloon.x>canvas.width-220){
-      balloon.popped=true;
-      night=true;
-      message.style.display="block";
-      note.style.display="block";
-      setInterval(createFirework,1000);
+    if(balloonX > canvas.width-220){
+      balloonPopped = true;
+      setTimeout(showBirthdayScreen,1000);
     }
   }
 
-  // Fireworks
-  fireworks.forEach(fw=>{
-    fw.forEach(p=>{
-      p.x+=Math.cos(p.angle)*p.speed;
-      p.y+=Math.sin(p.angle)*p.speed;
-      ctx.fillStyle="hsl("+Math.random()*360+",100%,60%)";
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,2,0,Math.PI*2);
-      ctx.fill();
-    });
-  });
-
+  drawScene();
   requestAnimationFrame(animate);
 }
+
+function showBirthdayScreen(){
+  canvas.style.display="none";
+  birthdayScreen.style.display="block";
+  startHearts();
+}
+
+// Floating hearts
+function startHearts(){
+  setInterval(()=>{
+    hearts.push({
+      x:Math.random()*window.innerWidth,
+      y:window.innerHeight,
+      size:10+Math.random()*10,
+      speed:1+Math.random()*2
+    });
+  },200);
+
+  function heartAnimation(){
+    let bg = birthdayScreen;
+    bg.style.position="relative";
+
+    let existing = document.querySelectorAll(".heart");
+    existing.forEach(h=>h.remove());
+
+    hearts.forEach((h,i)=>{
+      h.y -= h.speed;
+
+      let heart = document.createElement("div");
+      heart.className="heart";
+      heart.style.position="absolute";
+      heart.style.left=h.x+"px";
+      heart.style.top=h.y+"px";
+      heart.style.fontSize=h.size+"px";
+      heart.innerHTML="💖";
+      bg.appendChild(heart);
+
+      if(h.y < -20){
+        hearts.splice(i,1);
+      }
+    });
+
+    requestAnimationFrame(heartAnimation);
+  }
+
+  heartAnimation();
+}
+
+startScreen.onclick = function(){
+  startScreen.style.display="none";
+  balloonMoving = true;
+  animate();
+};
 </script>
 
 </body>
