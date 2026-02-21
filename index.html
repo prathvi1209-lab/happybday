@@ -36,8 +36,22 @@ canvas{display:block;}
 </head>
 
 <body>
+canvas.addEventListener("click",()=>{
+ if(stage===0){
+   stage=1;
 
-<audio id="music" src="aud.mp3"></audio>
+   music.currentTime = 0;
+   music.play().catch(err=>{
+      console.log("Music blocked:", err);
+   });
+
+   setTimeout(()=>{stage=2; createHearts(canvas.width/2,200);},3000);
+   setTimeout(()=>{stage=3; showFinal();},5000);
+ }
+});
+<audio id="music">
+  <source src="aud.mp3" type="audio/mpeg">
+</audio>
 <canvas id="canvas"></canvas>
 
 <div id="message">
