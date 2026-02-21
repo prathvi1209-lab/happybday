@@ -8,13 +8,13 @@
 body{
   margin:0;
   overflow:hidden;
-  background:black;
-  font-family:Segoe UI;
+  background:#87CEEB;
+  font-family:Arial, sans-serif;
 }
 canvas{
   display:block;
 }
-#messageBox{
+#finalMessage{
   position:absolute;
   top:50%;
   left:50%;
@@ -23,18 +23,17 @@ canvas{
   color:white;
   display:none;
 }
-#messageBox h1{
-  font-size:55px;
-  color:#ff66cc;
+#finalMessage h1{
+  font-size:60px;
+  color:#ff69b4;
 }
 #note{
   background:#fff8dc;
   color:black;
   padding:20px;
-  width:520px;
-  border-radius:12px;
+  width:500px;
+  border-radius:15px;
   margin-top:20px;
-  font-size:16px;
 }
 </style>
 </head>
@@ -44,7 +43,7 @@ canvas{
 <audio id="bgMusic" src="music.mp3"></audio>
 <canvas id="canvas"></canvas>
 
-<div id="messageBox">
+<div id="finalMessage">
   <h1>🎉 Happy Birthday Krity 🎉</h1>
   <div id="note">
   Hey,<br><br>
@@ -62,37 +61,28 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let stage = 0;
+let balloonY = 200;
 let hearts = [];
 let fireworks = [];
 let stars = [];
 
 const music = document.getElementById("bgMusic");
 
-for(let i=0;i<120;i++){
-  stars.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    size:Math.random()*2
-  });
-}
-
-canvas.addEventListener("click",()=>{
+canvas.addEventListener("click", ()=>{
   if(stage===0){
-    stage=1;
     music.play();
+    stage=1;
     setTimeout(()=>{
-      createHearts(canvas.width/2,200);
       stage=2;
+      createHearts(canvas.width/2, balloonY);
     },3000);
+    setTimeout(()=>{
+      stage=3;
+      document.body.style.background="black";
+      document.getElementById("finalMessage").style.display="block";
+    },5000);
   }
 });
-
-function drawStars(){
-  ctx.fillStyle="white";
-  stars.forEach(s=>{
-    ctx.fillRect(s.x,s.y,s.size,s.size);
-  });
-}
 
 function drawGirl(x,y,color){
   ctx.fillStyle=color;
@@ -110,12 +100,12 @@ function drawBalloon(x,y){
   ctx.beginPath();
   ctx.moveTo(x,y+25);
   ctx.lineTo(x,y+70);
-  ctx.strokeStyle="white";
+  ctx.strokeStyle="black";
   ctx.stroke();
 }
 
 function createHearts(x,y){
-  for(let i=0;i<50;i++){
+  for(let i=0;i<40;i++){
     hearts.push({
       x:x,
       y:y,
@@ -140,34 +130,45 @@ function createFirework(){
   }
 }
 
-function animate(){
-  ctx.fillStyle="black";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+function createStars(){
+  for(let i=0;i<120;i++){
+    stars.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      size:Math.random()*2
+    });
+  }
+}
+createStars();
 
-  drawStars();
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
   if(stage===0){
-    ctx.fillStyle="white";
+    ctx.fillStyle="black";
     ctx.font="30px Arial";
     ctx.fillText("Click to Start 🎈",canvas.width/2-100,canvas.height/2);
   }
 
   if(stage===1){
-    drawGirl(300,350,"pink");
-    drawGirl(600,350,"skyblue");
-    drawGirl(700,350,"orange");
-    drawGirl(800,350,"purple");
-    drawBalloon(300,250);
+    drawGirl(300,350,"pink"); // girl giving
+    drawGirl(600,350,"skyblue"); // girl receiving
+    drawBalloon(450, balloonY);
   }
 
   if(stage===2){
-    document.getElementById("messageBox").style.display="block";
-
     hearts.forEach(h=>{
       h.x+=h.dx;
       h.y+=h.dy;
       ctx.font=h.size+"px Arial";
       ctx.fillText("💖",h.x,h.y);
+    });
+  }
+
+  if(stage===3){
+    ctx.fillStyle="white";
+    stars.forEach(s=>{
+      ctx.fillRect(s.x,s.y,s.size,s.size);
     });
 
     fireworks.forEach((f,index)=>{
@@ -176,19 +177,14 @@ function animate(){
       f.life--;
       ctx.fillStyle="hsl("+Math.random()*360+",100%,60%)";
       ctx.fillRect(f.x,f.y,3,3);
-      if(f.life<=0){
-        fireworks.splice(index,1);
-      }
+      if(f.life<=0) fireworks.splice(index,1);
     });
 
-    if(Math.random()<0.05){
-      createFirework();
-    }
+    if(Math.random()<0.05) createFirework();
   }
 
   requestAnimationFrame(animate);
 }
-
 animate();
 </script>
 
