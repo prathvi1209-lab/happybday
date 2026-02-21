@@ -2,66 +2,47 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday Krity 💖</title>
-
+<title>Happy Birthday Krity</title>
 <style>
 body{
   margin:0;
   overflow:hidden;
-  font-family:Arial, sans-serif;
-  background:#000814;
-  color:white;
-  text-align:center;
+  background:black;
+  font-family: 'Segoe UI', sans-serif;
 }
-
 canvas{
+  display:block;
+}
+#messageBox{
   position:absolute;
-  top:0;
-  left:0;
-}
-
-#start{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.7);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:2rem;
-  cursor:pointer;
-  z-index:10;
-}
-
-#birthdayScreen{
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  color:white;
   display:none;
-  position:relative;
-  z-index:2;
-  padding-top:80px;
 }
-
-h1{
-  font-size:3.5rem;
+#messageBox h1{
+  font-size:50px;
+  margin-bottom:20px;
+  color:#ff80bf;
 }
-
 #note{
-  width:60%;
-  margin:30px auto;
-  line-height:1.6;
-  font-size:1.1rem;
+  background:#fff8dc;
+  color:black;
+  padding:20px;
+  width:500px;
+  border-radius:10px;
+  font-size:16px;
 }
 </style>
 </head>
-
 <body>
-
-<div id="start">Click To Start 💖</div>
 
 <canvas id="canvas"></canvas>
 
-<div id="birthdayScreen">
-  <h1>Happy Birthday Krity 🎉</h1>
-
+<div id="messageBox">
+  <h1>🎉 Happy Birthday Krity 🎉</h1>
   <div id="note">
   Hey,<br><br>
   I know we don’t really talk anymore, and things are different now… but I just wanted to say I genuinely appreciate what we had. Our friendship was honestly one of the best parts of my life at that time.<br><br>
@@ -77,31 +58,60 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const start = document.getElementById("start");
-const birthdayScreen = document.getElementById("birthdayScreen");
-
-let balloonX = 200;
-let balloonY = canvas.height - 200;
-let balloonMoving = false;
+let stage = 0;
+let hearts = [];
+let floatingHearts = [];
+let balloonY = 200;
 let balloonPopped = false;
-let sceneFinished = false;
 
-// Draw simple girl
+canvas.addEventListener("click", () => {
+  if(stage === 0){
+    stage = 1;
+  }
+});
+
 function drawGirl(x,y,color){
-  ctx.fillStyle="#FFDAB9";
+  ctx.fillStyle = color;
   ctx.beginPath();
-  ctx.arc(x,y-60,15,0,Math.PI*2);
+  ctx.arc(x,y,20,0,Math.PI*2);
   ctx.fill();
-
-  ctx.fillStyle=color;
-  ctx.beginPath();
-  ctx.moveTo(x-20,y-45);
-  ctx.lineTo(x+20,y-45);
-  ctx.lineTo(x,y+30);
-  ctx.fill();
+  ctx.fillRect(x-15,y+20,30,60);
 }
 
-// Draw stars
+function drawBalloon(x,y){
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(x,y,25,0,Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x,y+25);
+  ctx.lineTo(x,y+70);
+  ctx.strokeStyle="white";
+  ctx.stroke();
+}
+
+function createHearts(x,y){
+  for(let i=0;i<40;i++){
+    hearts.push({
+      x:x,
+      y:y,
+      dx:(Math.random()-0.5)*6,
+      dy:(Math.random()-0.5)*6,
+      size:15+Math.random()*10
+    });
+  }
+}
+
+function createFloatingHearts(){
+  for(let i=0;i<5;i++){
+    floatingHearts.push({
+      x:Math.random()*canvas.width,
+      y:canvas.height,
+      speed:1+Math.random()*2
+    });
+  }
+}
+
 function drawStars(){
   for(let i=0;i<100;i++){
     ctx.fillStyle="white";
@@ -109,77 +119,63 @@ function drawStars(){
   }
 }
 
+function drawMoon(){
+  ctx.fillStyle="white";
+  ctx.beginPath();
+  ctx.arc(canvas.width-150,100,50,0,Math.PI*2);
+  ctx.fill();
+}
+
 function animate(){
-  if(sceneFinished) return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  ctx.fillStyle="#001d3d";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(stage === 0){
+    ctx.fillStyle="white";
+    ctx.font="30px Arial";
+    ctx.fillText("Click to Start 🎈",canvas.width/2-100,canvas.height/2);
+  }
 
-  drawStars();
+  if(stage === 1){
+    drawGirl(200,300,"pink");
+    drawGirl(500,300,"skyblue");
+    drawGirl(600,300,"orange");
+    drawGirl(700,300,"purple");
+    drawBalloon(200,200);
 
-  // First girl
-  drawGirl(200,canvas.height-150,"#ff69b4");
+    setTimeout(()=>{
+      balloonPopped=true;
+      createHearts(200,200);
+      stage=2;
+    },3000);
+  }
 
-  // Three girls
-  drawGirl(canvas.width-300,canvas.height-150,"#ba55d3");
-  drawGirl(canvas.width-200,canvas.height-150,"#ff1493");
-  drawGirl(canvas.width-100,canvas.height-150,"#db7093");
+  if(stage === 2){
+    ctx.fillStyle="black";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    drawStars();
+    drawMoon();
 
-  // Balloon
-  if(!balloonPopped){
-    ctx.fillStyle="red";
-    ctx.beginPath();
-    ctx.arc(balloonX,balloonY,20,0,Math.PI*2);
-    ctx.fill();
+    hearts.forEach(h=>{
+      h.x+=h.dx;
+      h.y+=h.dy;
+      ctx.font=h.size+"px Arial";
+      ctx.fillText("💖",h.x,h.y);
+    });
 
-    balloonX += 4;
-    balloonY -= 2;
+    createFloatingHearts();
+    floatingHearts.forEach(h=>{
+      h.y-=h.speed;
+      ctx.font="20px Arial";
+      ctx.fillText("💗",h.x,h.y);
+    });
 
-    if(balloonX > canvas.width-220){
-      balloonPopped = true;
-      setTimeout(showBirthdayScreen,1000);
-    }
+    document.getElementById("messageBox").style.display="block";
   }
 
   requestAnimationFrame(animate);
 }
 
-function showBirthdayScreen(){
-  sceneFinished = true;
-  canvas.style.display="none";
-  birthdayScreen.style.display="block";
-  startHearts();
-}
-
-function startHearts(){
-  setInterval(()=>{
-    let heart = document.createElement("div");
-    heart.innerHTML="💖";
-    heart.style.position="fixed";
-    heart.style.left=Math.random()*100+"vw";
-    heart.style.bottom="-20px";
-    heart.style.fontSize=(15+Math.random()*15)+"px";
-    heart.style.opacity="0.8";
-    heart.style.transition="transform 6s linear, opacity 6s linear";
-    document.body.appendChild(heart);
-
-    setTimeout(()=>{
-      heart.style.transform="translateY(-110vh)";
-      heart.style.opacity="0";
-    },50);
-
-    setTimeout(()=>{
-      heart.remove();
-    },6000);
-
-  },250);
-}
-
-start.onclick=function(){
-  start.style.display="none";
-  balloonMoving=true;
-  animate();
-};
+animate();
 </script>
 
 </body>
