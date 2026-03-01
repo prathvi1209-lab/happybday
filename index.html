@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday Kirty</title>
+<title>Happy Birthday Aditya</title>
 <style>
 body{
   margin:0;
@@ -22,7 +22,7 @@ canvas{display:block;}
 }
 #final h1{
   font-size:55px;
-  color:#ff69b4;
+  color:#ffcc00;
 }
 #note{
   background:#fff8dc;
@@ -44,13 +44,12 @@ canvas{display:block;}
 <canvas id="canvas"></canvas>
 
 <div id="final">
-<h1>🎉 Happy Birthday Kirty 🎉</h1>
+<h1>🎉 Happy Birthday Aditya 🎉</h1>
 <div id="note">
-Hey,<br><br>
-I know we don’t really talk anymore, and things are different now… but I just wanted to say I genuinely appreciate what we had. Our friendship was honestly one of the best parts of my life at that time.<br><br>
-All the random talks, the stupid jokes, the way we could tell each other anything — that wasn’t normal friendship stuff. That was special.<br><br>
-Even if we’re not close anymore, I’ll always respect what we shared. No hard feelings, no bad vibes. Just good memories and wishing you the best, always.<br><br>
-Take care.
+Happy Birthday Aditya! 🎂✨<br><br>
+Wishing you a day filled with happiness, laughter, and unforgettable moments. May this year bring you success, good health, and everything your heart wishes for.<br><br>
+Keep shining, keep smiling, and never stop chasing your dreams. You deserve all the good things life has to offer.<br><br>
+Enjoy your special day to the fullest! 🎉
 </div>
 </div>
 
@@ -66,7 +65,6 @@ let fireworks=[];
 let stars=[];
 const music=document.getElementById("music");
 
-// CLICK START
 canvas.addEventListener("click", function start(){
  if(stage===0){
    music.play();
@@ -87,7 +85,6 @@ canvas.addEventListener("click", function start(){
  }
 });
 
-// DRAW GIRL
 function drawGirl(x,y,color){
  ctx.fillStyle=color;
  ctx.beginPath();
@@ -96,7 +93,6 @@ function drawGirl(x,y,color){
  ctx.fillRect(x-15,y+20,30,60);
 }
 
-// DRAW BALLOON
 function drawBalloon(x,y){
  ctx.fillStyle="red";
  ctx.beginPath();
@@ -108,7 +104,6 @@ function drawBalloon(x,y){
  ctx.stroke();
 }
 
-// HEART EXPLOSION
 function createHearts(x,y){
  for(let i=0;i<60;i++){
   hearts.push({
@@ -121,7 +116,6 @@ function createHearts(x,y){
  }
 }
 
-// FIREWORK
 function createFirework(){
  let x=Math.random()*canvas.width;
  let y=Math.random()*canvas.height/2;
@@ -137,7 +131,6 @@ function createFirework(){
  }
 }
 
-// STARS
 for(let i=0;i<150;i++){
  stars.push({
   x:Math.random()*canvas.width,
@@ -146,7 +139,6 @@ for(let i=0;i<150;i++){
  });
 }
 
-// ANIMATION
 function animate(){
  ctx.clearRect(0,0,canvas.width,canvas.height);
 
@@ -174,13 +166,11 @@ function animate(){
  }
 
  if(stage===3){
-  // stars
   ctx.fillStyle="white";
   stars.forEach(s=>{
    ctx.fillRect(s.x,s.y,s.size,s.size);
   });
 
-  // fireworks
   fireworks.forEach((f,index)=>{
    f.x+=f.dx;
    f.y+=f.dy;
