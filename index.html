@@ -2,190 +2,113 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday Aditya</title>
+<title>Question for Anushka ❤️</title>
+
 <style>
 body{
   margin:0;
-  overflow:hidden;
-  background:#87CEEB;
   font-family:Arial, sans-serif;
-}
-canvas{display:block;}
-#final{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
+  overflow:hidden;
+  background:linear-gradient(#ff9a9e,#fad0c4);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
   text-align:center;
-  display:none;
+}
+
+#box{
+  background:white;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  z-index:2;
+}
+
+h1{
+  color:#ff3366;
+}
+
+button{
+  padding:12px 25px;
+  margin:10px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+#yes{
+  background:#ff4d6d;
   color:white;
 }
-#final h1{
-  font-size:55px;
-  color:#ffcc00;
+
+#no{
+  background:#888;
+  color:white;
 }
-#note{
-  background:#fff8dc;
-  color:black;
-  padding:20px;
-  width:500px;
-  border-radius:15px;
-  margin-top:20px;
+
+.heart{
+  position:absolute;
+  color:red;
+  font-size:20px;
+  animation:float 6s linear infinite;
+}
+
+@keyframes float{
+  from{
+    transform:translateY(100vh);
+    opacity:1;
+  }
+  to{
+    transform:translateY(-10vh);
+    opacity:0;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<audio id="music">
-  <source src="./aud.mp3" type="audio/mpeg">
-</audio>
+<div id="box">
+<h1 id="question">Anushka, will you be my GF? ❤️</h1>
 
-<canvas id="canvas"></canvas>
-
-<div id="final">
-<h1>🎉 Happy Birthday Aditya 🎉</h1>
-<div id="note">
-Happy Birthday Aditya! 🎂✨<br><br>
-Wishing you a day filled with happiness, laughter, and unforgettable moments. May this year bring you success, good health, and everything your heart wishes for.<br><br>
-Keep shining, keep smiling, and never stop chasing your dreams. You deserve all the good things life has to offer.<br><br>
-Enjoy your special day to the fullest! 🎉
+<div id="buttons">
+<button id="yes" onclick="yes()">YES</button>
+<button id="no" onclick="no()">NO</button>
 </div>
+
+<p id="message"></p>
 </div>
 
 <script>
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
 
-let stage=0;
-let hearts=[];
-let fireworks=[];
-let stars=[];
-const music=document.getElementById("music");
-
-canvas.addEventListener("click", function start(){
- if(stage===0){
-   music.play();
-   stage=1;
-
-   setTimeout(()=>{
-     stage=2;
-     createHearts(canvas.width/2,200);
-   },3000);
-
-   setTimeout(()=>{
-     stage=3;
-     document.body.style.background="black";
-     document.getElementById("final").style.display="block";
-   },5000);
-
-   canvas.removeEventListener("click", start);
- }
-});
-
-function drawGirl(x,y,color){
- ctx.fillStyle=color;
- ctx.beginPath();
- ctx.arc(x,y,20,0,Math.PI*2);
- ctx.fill();
- ctx.fillRect(x-15,y+20,30,60);
+function yes(){
+  document.getElementById("question").innerText="Prathvi is yours ❤️";
+  document.getElementById("buttons").style.display="none";
+  document.getElementById("message").innerText="You made the right choice 😌";
 }
 
-function drawBalloon(x,y){
- ctx.fillStyle="red";
- ctx.beginPath();
- ctx.arc(x,y,25,0,Math.PI*2);
- ctx.fill();
- ctx.beginPath();
- ctx.moveTo(x,y+25);
- ctx.lineTo(x,y+70);
- ctx.stroke();
+function no(){
+  document.getElementById("message").innerText="Fool! You chose wrong 😝 Try again!";
 }
 
-function createHearts(x,y){
- for(let i=0;i<60;i++){
-  hearts.push({
-   x:x,
-   y:y,
-   dx:(Math.random()-0.5)*6,
-   dy:(Math.random()-0.5)*6,
-   size:15+Math.random()*10
-  });
- }
+function hearts(){
+  const heart=document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML="❤️";
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.fontSize=(20+Math.random()*20)+"px";
+
+  document.body.appendChild(heart);
+
+  setTimeout(()=>{
+    heart.remove();
+  },6000);
 }
 
-function createFirework(){
- let x=Math.random()*canvas.width;
- let y=Math.random()*canvas.height/2;
+setInterval(hearts,300);
 
- for(let i=0;i<60;i++){
-  fireworks.push({
-   x:x,
-   y:y,
-   dx:(Math.random()-0.5)*8,
-   dy:(Math.random()-0.5)*8,
-   life:60
-  });
- }
-}
-
-for(let i=0;i<150;i++){
- stars.push({
-  x:Math.random()*canvas.width,
-  y:Math.random()*canvas.height,
-  size:Math.random()*2
- });
-}
-
-function animate(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
-
- if(stage===0){
-  ctx.fillStyle="black";
-  ctx.font="30px Arial";
-  ctx.fillText("Click to Start 🎈",canvas.width/2-120,canvas.height/2);
- }
-
- if(stage===1){
-  drawGirl(250,350,"pink");
-  drawGirl(500,350,"skyblue");
-  drawGirl(650,350,"orange");
-  drawGirl(800,350,"purple");
-  drawBalloon(400,200);
- }
-
- if(stage===2){
-  hearts.forEach(h=>{
-   h.x+=h.dx;
-   h.y+=h.dy;
-   ctx.font=h.size+"px Arial";
-   ctx.fillText("💖",h.x,h.y);
-  });
- }
-
- if(stage===3){
-  ctx.fillStyle="white";
-  stars.forEach(s=>{
-   ctx.fillRect(s.x,s.y,s.size,s.size);
-  });
-
-  fireworks.forEach((f,index)=>{
-   f.x+=f.dx;
-   f.y+=f.dy;
-   f.life--;
-   ctx.fillStyle="hsl("+Math.random()*360+",100%,60%)";
-   ctx.fillRect(f.x,f.y,3,3);
-   if(f.life<=0) fireworks.splice(index,1);
-  });
-
-  if(Math.random()<0.05) createFirework();
- }
-
- requestAnimationFrame(animate);
-}
-animate();
 </script>
 
 </body>
